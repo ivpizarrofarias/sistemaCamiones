@@ -1,14 +1,15 @@
 package cl.ipfsoftware.bakend.model.mapper;
 
-import cl.ipfsoftware.sistemacamiones.model.dto.*;
-import cl.ipfsoftware.sistemacamiones.model.entities.*;
+
+import cl.ipfsoftware.bakend.model.dto.*;
+import cl.ipfsoftware.bakend.model.entities.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 
 @Mapper(componentModel = "spring", uses = { Cliente.class, ClientDTO.class, Nave.class, ShipDTO.class,
         Puerto.class, PortDTO.class, Viaje.class, TripDTO.class, Contenedor.class,ContainerDTO.class,
-        TransporteTerrestre.class,GroundTransportDTO.class })
+        TransporteTerrestre.class, GroundTransportDTO.class })
 public interface ValuationMapper {
 
     // Mapeo de Valorización (entidad) a ValuationDTO
