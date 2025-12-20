@@ -13,6 +13,7 @@ import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,21 +21,25 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-
+@Service
 public class UserServiceImpl implements UserService {
 
     private final UsuarioRepository usuarioRepository;
     private final UserMapper userMapper;
     private final Validator validator;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
     public UserServiceImpl(
             UsuarioRepository usuarioRepository,
             UserMapper userMapper,
-            Validator validator) {
+            Validator validator,
+            PasswordEncoder passwordEncoder
+    ) {
         this.usuarioRepository = usuarioRepository;
         this.userMapper = userMapper;
         this.validator = validator;
+        this.passwordEncoder = passwordEncoder;
     }
 
     // ===================== CREATE =====================
@@ -55,6 +60,10 @@ public class UserServiceImpl implements UserService {
             }
 
             usuario = userMapper.toUser(userDTO);
+
+            // 🔐 ENCRIPTAR CONTRASEÑA
+            usuario.setClave(passwordEncoder.encode(userDTO.getPassword()));
+
             usuario = usuarioRepository.save(usuario);
 
         } catch (DuplicateKeyException e) {
@@ -89,7 +98,7 @@ public class UserServiceImpl implements UserService {
 
     // ===================== UPDATE =====================
     @Override
-    public Optional<UserDTO> updateUser(Integer id, UserDTO userDTO) throws Exception {
+    public Optional<UserDTO> updateUser(Integer id, UserDTO userDTO) {
         try {
             Set<ConstraintViolation<UserDTO>> violations = validator.validate(userDTO);
             if (!violations.isEmpty()) {
@@ -112,8 +121,14 @@ public class UserServiceImpl implements UserService {
             usuarioToUpdate.setPaterno(userDTO.getPaternalLastName());
             usuarioToUpdate.setMaterno(userDTO.getMaternalLastName());
             usuarioToUpdate.setCorreo(userDTO.getEmail());
-            usuarioToUpdate.setClave(userDTO.getPassword());
             usuarioToUpdate.setRolUsuario(userDTO.getUserRole());
+
+            // 🔐 ENCRIPTAR SOLO SI VIENE CLAVE NUEVA
+            if (userDTO.getPassword() != null && !userDTO.getPassword().isBlank()) {
+                usuarioToUpdate.setClave(
+                        passwordEncoder.encode(userDTO.getPassword())
+                );
+            }
 
             usuarioRepository.save(usuarioToUpdate);
 
