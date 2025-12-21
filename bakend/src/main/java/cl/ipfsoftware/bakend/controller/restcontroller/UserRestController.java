@@ -18,7 +18,8 @@ import java.util.stream.Collectors;
 @CrossOrigin(
         origins = "http://localhost:4200",
         allowedHeaders = "*",
-        methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE}
+        methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE, RequestMethod.OPTIONS},
+        allowCredentials = "true", maxAge = 3600
 )
 @RestController
 @RequestMapping("/api/usuarios")
