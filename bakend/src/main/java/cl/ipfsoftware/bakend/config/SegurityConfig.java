@@ -35,7 +35,9 @@ public class SegurityConfig {
                         //  ENDPOINT PÚBLICO
                         .requestMatchers(
                                 "/api/usuarios/guardar",
-                                "/api/contenedores/**"
+                                "/api/contenedores/**",
+                                "/api/usuarios/**"
+
                         ).permitAll()
 
                         // 🔒 TODO LO DEMÁS PROTEGIDO

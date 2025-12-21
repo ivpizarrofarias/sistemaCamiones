@@ -1,19 +1,22 @@
-import { Component, EventEmitter, Output } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component } from '@angular/core';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [CommonModule, MatToolbarModule, MatButtonModule, MatIconModule],
+  imports: [
+    MatToolbarModule,
+    MatIconModule,
+    MatButtonModule
+  ],
   template: `
-    <mat-toolbar color="primary" class="navbar">
-      <button mat-icon-button (click)="onToggleSidebar()">
+    <mat-toolbar color="primary">
+      <button mat-icon-button>
         <mat-icon>menu</mat-icon>
       </button>
-      <span>Sistema de Camiones</span>
+      <span style="margin-left: 10px">Panel Administrativo</span>
       <span class="spacer"></span>
       <button mat-icon-button>
         <mat-icon>account_circle</mat-icon>
@@ -24,19 +27,6 @@ import { MatIconModule } from '@angular/material/icon';
     .spacer {
       flex: 1 1 auto;
     }
-    .navbar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 1000;
-    }
   `]
 })
-export class NavbarComponent {
-  @Output() toggleSidebar = new EventEmitter<void>();
-
-  onToggleSidebar(): void {
-    this.toggleSidebar.emit();
-  }
-}
+export class NavbarComponent {}

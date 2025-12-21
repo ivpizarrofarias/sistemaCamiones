@@ -8,6 +8,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { UserService } from '../../core/services/entities.service';
 import { User } from '../../core/models/entities.model';
+import {RouterLink} from "@angular/router";
 
 @Component({
   selector: 'app-user-list',
@@ -19,15 +20,26 @@ import { User } from '../../core/models/entities.model';
     MatIconModule,
     MatCardModule,
     MatFormFieldModule,
-    MatInputModule
+    MatInputModule,
+    RouterLink
   ],
   template: `
     <div class="page-container">
       <mat-card>
-        <mat-card-header>
+        <mat-card-header class="header">
           <mat-card-title>Usuarios</mat-card-title>
         </mat-card-header>
         <mat-card-content>
+          <div class="header-actions">
+            <button mat-raised-button color="primary" routerLink="/users/create">
+              <mat-icon>person_add</mat-icon>
+              Crear Usuario
+              </button>
+          </div>
+
+          <!-- Espaciador entre botón y buscador -->
+          <div class="spacer"></div>
+
           <mat-form-field appearance="outline" class="search-field">
             <mat-label>Buscar usuario</mat-label>
             <input matInput (keyup)="applyFilter($event)" placeholder="Nombre, Email o Rol" #input>
@@ -86,10 +98,35 @@ import { User } from '../../core/models/entities.model';
     </div>
   `,
   styles: [`
-    .page-container { padding: 20px; }
-    table { width: 100%; }
-    .search-field { width: 100%; margin-bottom: 20px; }
-    .no-data { padding: 20px; text-align: center; color: #666; }
+    .page-container {
+      padding: 20px;
+    }
+
+    table {
+      width: 100%;
+    }
+
+    .search-field {
+      width: 100%;
+      margin-bottom: 20px;
+    }
+
+    .no-data {
+      padding: 20px;
+      text-align: center;
+      color: #666;
+    }
+
+    .header-actions {
+      display: flex;
+      justify-content: flex-start; /* Cambiado de flex-end a flex-start */
+      margin-bottom: 8px;
+    }
+
+    .spacer {
+      height: 32px; /* Espacio entre el botón y el buscador */
+      width: 100%;
+    }
   `]
 })
 export class UserListComponent implements OnInit {
