@@ -70,7 +70,11 @@ import {RouterLink} from "@angular/router";
             <ng-container matColumnDef="actions">
               <th mat-header-cell *matHeaderCellDef> Acciones </th>
               <td mat-cell *matCellDef="let user">
-                <button mat-icon-button color="primary">
+                <button
+                  mat-icon-button
+                  color="primary"
+                  [routerLink]="['/users/edit', user.userId]"
+                >
                   <mat-icon>edit</mat-icon>
                 </button>
                 <button mat-icon-button color="warn" (click)="deleteUser(user.userId)">

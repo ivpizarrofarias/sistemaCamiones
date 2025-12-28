@@ -22,7 +22,13 @@ export const routes: Routes = [
         path: 'users/create',
         loadComponent: () =>
           import('./pages/users/user-create.component')
-            .then(m => m.default)
+            .then(m => m.default) // 👈 sigue siendo default
+      },
+      {
+        path: 'users/edit/:id',
+        loadComponent: () =>
+          import('./pages/users/user-update.component')
+            .then(m => m.UserUpdateComponent) // ✅ CORRECTO
       },
       {
         path: '',
