@@ -34,8 +34,16 @@ public class SegurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         //  ENDPOINT PÚBLICO
                         .requestMatchers(
-                                "/api/usuarios/guardar",
                                 "/api/contenedores/**",
+                                "/api/movements/driver/**",
+                                "/api/clientes/**",
+                                "/api/trips/**",
+                                "/api/ships/**",
+                                "/api/camiones/**",
+                                "/api/ground-transports/**",
+                                "/api/trucks/**",
+                                "/api/valuations/**",
+                                "/api/movements/**",
                                 "/api/usuarios/**"
 
                         ).permitAll()

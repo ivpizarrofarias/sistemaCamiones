@@ -22,13 +22,49 @@ export const routes: Routes = [
         path: 'users/create',
         loadComponent: () =>
           import('./pages/users/user-create.component')
-            .then(m => m.default) // 👈 sigue siendo default
+            .then(m => m.default)
       },
       {
         path: 'users/edit/:id',
         loadComponent: () =>
           import('./pages/users/user-update.component')
-            .then(m => m.UserUpdateComponent) // ✅ CORRECTO
+            .then(m => m.UserUpdateComponent)
+      },
+      {
+        path: 'ships',
+        loadComponent: () =>
+          import('./pages/ships/ship-list.component')
+            .then(m => m.ShipListComponent)
+      },
+      {
+        path: 'ships/create',
+        loadComponent: () =>
+          import('./pages/ships/ship-create.component')
+            .then(m => m.default)
+      },
+      {
+        path: 'ships/edit/:id',
+        loadComponent: () =>
+          import('./pages/ships/ship-update.component')
+            .then(m => m.default)
+      },
+      {
+        path: 'trucks',
+        loadComponent: () =>
+          import('./pages/trucks/truck-list.component')
+            .then(m => m.TruckListComponent)
+      },
+      {
+        path: 'trucks/create',
+        loadComponent: () =>
+          import('./pages/trucks/truck-create.component')
+            .then(m => m.default)
+      },
+      {
+        path:'drivers',
+        loadComponent: () =>
+          import('./pages/drivers/driver-list.component')
+            .then(m => m.DriverListComponent)
       },
       {
         path: '',
