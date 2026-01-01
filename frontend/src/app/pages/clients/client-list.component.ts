@@ -103,14 +103,6 @@ export class SpanishPaginatorIntl extends MatPaginatorIntl {
               </td>
             </ng-container>
 
-            <!-- Teléfono -->
-            <ng-container matColumnDef="clientPhone">
-              <th mat-header-cell *matHeaderCellDef> Teléfono </th>
-              <td mat-cell *matCellDef="let client">
-                {{ client.clientPhone }}
-              </td>
-            </ng-container>
-
             <!-- Acciones -->
             <ng-container matColumnDef="actions">
               <th mat-header-cell *matHeaderCellDef> Acciones </th>
@@ -182,7 +174,7 @@ export class ClientListComponent implements OnInit {
     'clientId',
     'clientName',
     'clientEmail',
-    'clientPhone',
+
     'actions'
   ];
 

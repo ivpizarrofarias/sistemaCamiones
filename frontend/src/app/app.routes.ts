@@ -139,7 +139,18 @@ const routes: Routes = [
           import('./pages/clients/client-list.component')
             .then(m => m.ClientListComponent)
       },
-
+      {
+        path:'clients/create',
+        loadComponent:()=>
+          import('./pages/clients/client-create.component')
+            .then(m=>m.default)
+      },
+      {
+        path:'clients/edit/:id',
+        loadComponent:()=>
+          import('./pages/clients/client-update.component')
+            .then(m=>m.ClientUpdateComponent)
+      },
       {
         path: '',
         redirectTo: 'dashboard',
