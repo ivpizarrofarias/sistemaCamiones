@@ -1,6 +1,7 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTableModule, MatTableDataSource } from '@angular/material/table';
+import { MatPaginator, MatPaginatorModule, MatPaginatorIntl } from '@angular/material/paginator';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
@@ -8,7 +9,16 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { UserService } from '../../core/services/entities.service';
 import { User } from '../../core/models/entities.model';
-import {RouterLink} from "@angular/router";
+import { RouterLink } from '@angular/router';
+
+// Configuración del paginador en español
+export class SpanishPaginatorIntl extends MatPaginatorIntl {
+  override itemsPerPageLabel = 'Elementos por página:';
+  override nextPageLabel     = 'Siguiente página';
+  override previousPageLabel = 'Página anterior';
+  override firstPageLabel    = 'Primera página';
+  override lastPageLabel     = 'Última página';
+}
 
 @Component({
   selector: 'app-user-list',
@@ -16,12 +26,16 @@ import {RouterLink} from "@angular/router";
   imports: [
     CommonModule,
     MatTableModule,
+    MatPaginatorModule,
     MatButtonModule,
     MatIconModule,
     MatCardModule,
     MatFormFieldModule,
     MatInputModule,
     RouterLink
+  ],
+  providers: [
+    { provide: MatPaginatorIntl, useClass: SpanishPaginatorIntl }
   ],
   template: `
     <div class="page-container">
@@ -30,23 +44,27 @@ import {RouterLink} from "@angular/router";
           <mat-card-title>Usuarios</mat-card-title>
         </mat-card-header>
         <mat-card-content>
+          <!-- Botón Crear -->
           <div class="header-actions">
             <button mat-raised-button color="primary" routerLink="/users/create">
               <mat-icon>person_add</mat-icon>
               Crear Usuario
-              </button>
+            </button>
           </div>
 
-          <!-- Espaciador entre botón y buscador -->
+          <!-- Espaciador -->
           <div class="spacer"></div>
 
+          <!-- Buscador -->
           <mat-form-field appearance="outline" class="search-field">
             <mat-label>Buscar usuario</mat-label>
             <input matInput (keyup)="applyFilter($event)" placeholder="Nombre, Email o Rol" #input>
             <mat-icon matSuffix>search</mat-icon>
           </mat-form-field>
 
+          <!-- Tabla -->
           <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
             <ng-container matColumnDef="userId">
               <th mat-header-cell *matHeaderCellDef> ID </th>
               <td mat-cell *matCellDef="let user"> {{user.userId}} </td>
@@ -70,11 +88,7 @@ import {RouterLink} from "@angular/router";
             <ng-container matColumnDef="actions">
               <th mat-header-cell *matHeaderCellDef> Acciones </th>
               <td mat-cell *matCellDef="let user">
-                <button
-                  mat-icon-button
-                  color="primary"
-                  [routerLink]="['/users/edit', user.userId]"
-                >
+                <button mat-icon-button color="primary" [routerLink]="['/users/edit', user.userId]">
                   <mat-icon>edit</mat-icon>
                 </button>
                 <button mat-icon-button color="warn" (click)="deleteUser(user.userId)">
@@ -97,44 +111,30 @@ import {RouterLink} from "@angular/router";
               </td>
             </tr>
           </table>
+
+          <!-- Paginador fuera de la tabla -->
+          <div class="paginator-container">
+            <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+          </div>
+
         </mat-card-content>
       </mat-card>
     </div>
   `,
   styles: [`
-    .page-container {
-      padding: 20px;
-    }
-
-    table {
-      width: 100%;
-    }
-
-    .search-field {
-      width: 100%;
-      margin-bottom: 20px;
-    }
-
-    .no-data {
-      padding: 20px;
-      text-align: center;
-      color: #666;
-    }
-
-    .header-actions {
-      display: flex;
-      justify-content: flex-start; /* Cambiado de flex-end a flex-start */
-      margin-bottom: 8px;
-    }
-
-    .spacer {
-      height: 32px; /* Espacio entre el botón y el buscador */
-      width: 100%;
-    }
+    .page-container { padding: 20px; }
+    table { width: 100%; margin-bottom: 10px; }
+    .search-field { width: 100%; margin-bottom: 20px; }
+    .no-data { padding: 20px; text-align: center; color: #666; }
+    .header-actions { display: flex; justify-content: flex-start; margin-bottom: 8px; }
+    .spacer { height: 32px; width: 100%; }
+    .paginator-container { display: flex; justify-content: flex-end; margin-top: 10px; }
   `]
 })
 export class UserListComponent implements OnInit {
   private userService = inject(UserService);
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+
   dataSource = new MatTableDataSource<User>([]);
   displayedColumns: string[] = ['userId', 'fullName', 'email', 'userRole', 'actions'];
 
@@ -143,46 +143,37 @@ export class UserListComponent implements OnInit {
   }
 
   loadUsers(): void {
-    console.log('UserListComponent: Iniciando carga de usuarios...');
     this.userService.getAllUsers().subscribe({
-      next: (response) => {
-        console.log('UserListComponent: Respuesta recibida:', response);
-
-        if (response && response.success && Array.isArray(response.data)) {
+      next: (response: any) => {
+        if (response?.data && Array.isArray(response.data)) {
           this.dataSource.data = response.data;
-          console.log('UserListComponent: %d usuarios cargados correctamente', response.data.length);
         } else if (Array.isArray(response)) {
           this.dataSource.data = response;
-          console.log('UserListComponent: %d usuarios cargados (formato array directo)', response.length);
-        } else if (response && response.data && Array.isArray(response.data)) {
-          this.dataSource.data = response.data;
-          console.log('UserListComponent: %d usuarios cargados (formato .data)', response.data.length);
         } else {
-          console.warn('UserListComponent: No se pudo determinar el formato de los datos:', response);
           this.dataSource.data = [];
         }
+
+        // Asignar paginador después de cargar datos
+        setTimeout(() => this.dataSource.paginator = this.paginator);
       },
       error: (err) => {
-        console.error('UserListComponent: Error crítico al obtener usuarios:', err);
+        console.error('Error al obtener usuarios:', err);
         this.dataSource.data = [];
       }
     });
   }
 
-  applyFilter(event: Event) {
+  applyFilter(event: Event): void {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
+    if (this.dataSource.paginator) this.dataSource.paginator.firstPage();
   }
 
   deleteUser(id: number): void {
     if (confirm('¿Está seguro de eliminar este usuario?')) {
       this.userService.deleteUser(id).subscribe({
-        next: (response) => {
-          if (response.success) {
-            this.loadUsers();
-          }
-        },
-        error: (err) => console.error('Error deleting user', err)
+        next: () => this.loadUsers(),
+        error: (err) => console.error('Error eliminando usuario', err)
       });
     }
   }

@@ -1,14 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {
-  AbstractControl,
-  FormBuilder,
-  ReactiveFormsModule,
-  ValidationErrors,
-  Validators,
-  ɵElement,
-  ɵValue
-} from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 
 import { MatCardModule } from '@angular/material/card';
@@ -117,25 +109,24 @@ class ShipCreateComponent {
     shippingLine: ['', Validators.required]
   });
 
-  private capitalize(
-    value: ɵValue<
-      ɵElement<
-        (string | ((control: AbstractControl) => ValidationErrors | null))[],
-        never
-      >
-    > | undefined
-  ): string {
-    // @ts-ignore
-    return value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
+  // Capitaliza cada palabra de un string
+  private capitalizeWords(value: string): string {
+    return value
+      .trim()
+      .split(/\s+/)
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join(' ');
   }
 
   save(): void {
     if (this.form.invalid) return;
 
+    const raw = this.form.getRawValue();
+
     const payload: Ship = {
-      ...this.form.getRawValue(),
-      shipName: this.capitalize(this.form.value.shipName),
-      shippingLine: this.capitalize(this.form.value.shippingLine)
+      ...raw,
+      shipName: this.capitalizeWords(raw.shipName),
+      shippingLine: this.capitalizeWords(raw.shippingLine)
     };
 
     this.shipService.createShip(payload).subscribe({

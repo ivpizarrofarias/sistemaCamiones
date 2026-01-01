@@ -22,7 +22,7 @@ public class DriverDTO implements Serializable {
     @Size(max = 12, message = "El RUT del chofer no puede exceder los 12 caracteres")
     private String driverRut;
 
-    @NotBlank(message = "El número de licencia del chofer es obligatorio")
+
     @Pattern(regexp = "^\\d{1,3}(?:\\.\\d{3}){2}-[0-9kK]{1}$", message = "El número de licencia del chofer no es válido")
     @Size(max = 50, message = "El número de licencia del chofer no puede exceder los 50 caracteres")
     private String driverLicenseNumber;

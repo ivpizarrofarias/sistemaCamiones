@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 import { AdminLayoutComponent } from './layout/pages/admin-layout/admin-layout.component';
 
-export const routes: Routes = [
+const routes: Routes = [
   {
     path: '',
     component: AdminLayoutComponent,
@@ -22,7 +22,7 @@ export const routes: Routes = [
         path: 'users/create',
         loadComponent: () =>
           import('./pages/users/user-create.component')
-            .then(m => m.default)
+            .then(m => m.UserCreateComponent)
       },
       {
         path: 'users/edit/:id',
@@ -66,6 +66,16 @@ export const routes: Routes = [
           import('./pages/drivers/driver-list.component')
             .then(m => m.DriverListComponent)
       },
+      { path:'drivers/create',
+        loadComponent: () =>
+          import('./pages/drivers/driver-create.component')
+            .then(m => m.DriverCreateComponent)
+      },
+      { path:'drivers/edit/:id',
+        loadComponent:()=>
+          import('./pages/drivers/driver-update.component')
+            .then(m=>m.DriverEditComponent)
+      },
       {
         path: '',
         redirectTo: 'dashboard',
@@ -74,3 +84,4 @@ export const routes: Routes = [
     ]
   }
 ];
+export default routes

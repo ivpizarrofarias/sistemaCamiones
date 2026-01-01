@@ -30,7 +30,7 @@ public class Usuario {
     private String clave;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "rol_usuario")
+    @Column(name = "rol_usuario", length = 20)
     private RolUsuario rolUsuario;
 
     @Column(name = "fecha_creacion", nullable = false)

@@ -1,14 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {
-  AbstractControl,
-  FormBuilder,
-  ReactiveFormsModule,
-  ValidationErrors,
-  Validators,
-  ɵElement,
-  ɵValue
-} from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 
 import { MatCardModule } from '@angular/material/card';
@@ -20,7 +12,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 import { UserService } from '../../core/services/user.service';
 
-type UserRole = 'ADMINISTRADOR' | 'SUPERADMINISTRADOR';
+type UserRole = 'ADMINISTRADOR' | 'SUPERADMINISTRADOR' | 'SUPERVISOR';
 
 @Component({
   selector: 'app-user-create',
@@ -79,6 +71,7 @@ type UserRole = 'ADMINISTRADOR' | 'SUPERADMINISTRADOR';
                 <mat-select formControlName="userRole">
                   <mat-option value="ADMINISTRADOR">Administrador</mat-option>
                   <mat-option value="SUPERADMINISTRADOR">Super Administrador</mat-option>
+                  <mat-option value="SUPERVISOR">Supervisor</mat-option>
                 </mat-select>
               </mat-form-field>
             </div>
@@ -122,7 +115,7 @@ type UserRole = 'ADMINISTRADOR' | 'SUPERADMINISTRADOR';
     }
   `]
 })
-class UserCreateComponent {
+export class UserCreateComponent {
 
   private fb = inject(FormBuilder);
   private userService = inject(UserService);
@@ -138,19 +131,25 @@ class UserCreateComponent {
     userRole: 'ADMINISTRADOR' as UserRole
   });
 
-  private capitalize(value: ɵValue<ɵElement<(string | ((control: AbstractControl) => (ValidationErrors | null)))[], never>> | undefined): string {
-    // @ts-ignore
-    return value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
+  // Capitaliza cada palabra de un string
+  private capitalizeWords(value: string): string {
+    return value
+      .trim()
+      .split(/\s+/)          // separar por espacios
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join(' ');            // unir de nuevo
   }
 
   save(): void {
     if (this.form.invalid) return;
 
+    const raw = this.form.getRawValue();
+
     const payload = {
-      ...this.form.getRawValue(),
-      firstName: this.capitalize(this.form.value.firstName),
-      paternalLastName: this.capitalize(this.form.value.paternalLastName),
-      maternalLastName: this.capitalize(this.form.value.maternalLastName)
+      ...raw,
+      firstName: this.capitalizeWords(raw.firstName),
+      paternalLastName: this.capitalizeWords(raw.paternalLastName),
+      maternalLastName: this.capitalizeWords(raw.maternalLastName)
     };
 
     this.userService.createUser(payload).subscribe({
@@ -164,5 +163,3 @@ class UserCreateComponent {
     });
   }
 }
-
-export default UserCreateComponent
