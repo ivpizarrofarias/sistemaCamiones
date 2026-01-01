@@ -35,7 +35,7 @@ public class SegurityConfig {
                         //  ENDPOINT PÚBLICO
                         .requestMatchers(
                                 "/api/contenedores/**",
-                                "/api/movements/**",
+                                 "/api/ports/**",
                                 "/api/choferes/**",
                                 "/api/clientes/**",
                                 "/api/trips/**",

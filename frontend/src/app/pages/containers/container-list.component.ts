@@ -1,13 +1,31 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTableModule, MatTableDataSource } from '@angular/material/table';
+import {
+  MatPaginator,
+  MatPaginatorModule,
+  MatPaginatorIntl
+} from '@angular/material/paginator';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { RouterLink } from '@angular/router';
+
 import { ContainerService } from '../../core/services/entities.service';
 import { Container } from '../../core/models/entities.model';
+
+/* =========================
+   Paginador en Español
+========================= */
+export class SpanishPaginatorIntl extends MatPaginatorIntl {
+  override itemsPerPageLabel = 'Elementos por página:';
+  override nextPageLabel = 'Siguiente página';
+  override previousPageLabel = 'Página anterior';
+  override firstPageLabel = 'Primera página';
+  override lastPageLabel = 'Última página';
+}
 
 @Component({
   selector: 'app-container-list',
@@ -15,43 +33,79 @@ import { Container } from '../../core/models/entities.model';
   imports: [
     CommonModule,
     MatTableModule,
+    MatPaginatorModule,
     MatButtonModule,
     MatIconModule,
     MatCardModule,
     MatFormFieldModule,
-    MatInputModule
+    MatInputModule,
+    RouterLink
+  ],
+  providers: [
+    { provide: MatPaginatorIntl, useClass: SpanishPaginatorIntl }
   ],
   template: `
     <div class="page-container">
       <mat-card>
+
         <mat-card-header>
           <mat-card-title>Contenedores</mat-card-title>
         </mat-card-header>
+
         <mat-card-content>
+
+          <!-- Botón Crear -->
+          <div class="header-actions">
+            <button mat-raised-button color="primary" routerLink="/containers/create">
+              <mat-icon>add</mat-icon>
+              Crear Contenedor
+            </button>
+          </div>
+
+          <div class="spacer"></div>
+
+          <!-- Buscador -->
           <mat-form-field appearance="outline" class="search-field">
             <mat-label>Buscar contenedor</mat-label>
-            <input matInput (keyup)="applyFilter($event)" placeholder="Ej. ABCD1234567" #input>
+            <input
+              matInput
+              (keyup)="applyFilter($event)"
+              placeholder="Ej. ABCD1234567"
+              #input
+            >
             <mat-icon matSuffix>search</mat-icon>
           </mat-form-field>
 
+          <!-- Tabla -->
           <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+            <!-- ID -->
             <ng-container matColumnDef="containerId">
               <th mat-header-cell *matHeaderCellDef> ID </th>
-              <td mat-cell *matCellDef="let container"> {{container.containerId}} </td>
+              <td mat-cell *matCellDef="let container">
+                {{ container.containerId }}
+              </td>
             </ng-container>
 
+            <!-- Código -->
             <ng-container matColumnDef="containerCode">
               <th mat-header-cell *matHeaderCellDef> Código </th>
-              <td mat-cell *matCellDef="let container"> {{container.containerCode}} </td>
+              <td mat-cell *matCellDef="let container">
+                {{ container.containerCode }}
+              </td>
             </ng-container>
 
+            <!-- Acciones -->
             <ng-container matColumnDef="actions">
               <th mat-header-cell *matHeaderCellDef> Acciones </th>
               <td mat-cell *matCellDef="let container">
-                <button mat-icon-button color="primary">
-                  <mat-icon>edit</mat-icon>
-                </button>
-                <button mat-icon-button color="warn" (click)="deleteContainer(container.containerId)">
+
+
+                <button
+                  mat-icon-button
+                  color="warn"
+                  (click)="deleteContainer(container.containerId!)"
+                >
                   <mat-icon>delete</mat-icon>
                 </button>
               </td>
@@ -60,30 +114,47 @@ import { Container } from '../../core/models/entities.model';
             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
             <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
 
+            <!-- Sin datos -->
             <tr class="mat-row" *matNoDataRow>
               <td class="mat-cell" colspan="3">
                 <div *ngIf="input.value; else noData" class="no-data">
-                  No hay datos que coincidan con el filtro "{{input.value}}"
+                  No hay datos que coincidan con el filtro "{{ input.value }}"
                 </div>
                 <ng-template #noData>
                   <div class="no-data">No hay contenedores registrados.</div>
                 </ng-template>
               </td>
             </tr>
+
           </table>
+
+          <!-- Paginador -->
+          <div class="paginator-container">
+            <mat-paginator
+              [pageSizeOptions]="[5, 10, 20]"
+              showFirstLastButtons>
+            </mat-paginator>
+          </div>
+
         </mat-card-content>
       </mat-card>
     </div>
   `,
   styles: [`
     .page-container { padding: 20px; }
-    table { width: 100%; }
+    table { width: 100%; margin-bottom: 10px; }
     .search-field { width: 100%; margin-bottom: 20px; }
     .no-data { padding: 20px; text-align: center; color: #666; }
+    .header-actions { display: flex; justify-content: flex-start; margin-bottom: 8px; }
+    .spacer { height: 32px; width: 100%; }
+    .paginator-container { display: flex; justify-content: flex-end; margin-top: 10px; }
   `]
 })
 export class ContainerListComponent implements OnInit {
+
   private containerService = inject(ContainerService);
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+
   dataSource = new MatTableDataSource<Container>([]);
   displayedColumns: string[] = ['containerId', 'containerCode', 'actions'];
 
@@ -92,45 +163,40 @@ export class ContainerListComponent implements OnInit {
   }
 
   loadContainers(): void {
-    console.log('Cargando contenedores desde:', (this.containerService as any).apiUrl || 'URL no definida');
     this.containerService.getAllContainers().subscribe({
       next: (response: any) => {
-        console.log('Respuesta recibida (Contenedores):', response);
-        if (response && response.success) {
+        if (response?.data && Array.isArray(response.data)) {
           this.dataSource.data = response.data;
-          console.log('Datos asignados a la tabla:', this.dataSource.data);
         } else if (Array.isArray(response)) {
           this.dataSource.data = response;
-          console.log('Datos asignados (formato array directo):', this.dataSource.data);
-        } else if (response && response.data && Array.isArray(response.data)) {
-          this.dataSource.data = response.data;
-          console.log('Datos asignados (formato .data directo):', this.dataSource.data);
         } else {
-          console.warn('Formato de respuesta no reconocido:', response);
           this.dataSource.data = [];
         }
+
+        setTimeout(() => {
+          this.dataSource.paginator = this.paginator;
+        });
       },
-      error: (err) => {
+      error: err => {
         console.error('Error al obtener contenedores:', err);
         this.dataSource.data = [];
       }
     });
   }
 
-  applyFilter(event: Event) {
+  applyFilter(event: Event): void {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
+    if (this.dataSource.paginator) {
+      this.dataSource.paginator.firstPage();
+    }
   }
 
   deleteContainer(id: number): void {
     if (confirm('¿Está seguro de eliminar este contenedor?')) {
       this.containerService.deleteContainer(id).subscribe({
-        next: (response) => {
-          if (response.success) {
-            this.loadContainers();
-          }
-        },
-        error: (err) => console.error('Error deleting container', err)
+        next: () => this.loadContainers(),
+        error: err => console.error('Error eliminando contenedor', err)
       });
     }
   }

@@ -1,4 +1,4 @@
-export type UserRole = 'ADMINISTRADOR' | 'SUPERADMINISTRADOR';
+export type UserRole = 'ADMINISTRADOR' | 'SUPERADMINISTRADOR'|'SUPERVISOR';
 export interface User {
   firstName: string;
   paternalLastName: string;

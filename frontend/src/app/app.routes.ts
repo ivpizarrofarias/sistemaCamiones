@@ -109,7 +109,36 @@ const routes: Routes = [
           import('./pages/ports/port-list.component')
             .then(m => m.PortListComponent)
       },
-
+      {
+        path: 'ports/create',
+        loadComponent: () =>
+          import('./pages/ports/port-create.component')
+            .then(m => m.default)
+      },
+      {
+        path: 'ports/edit/:id',
+        loadComponent: () =>
+          import('./pages/ports/port-update.component')
+            .then(m => m.default)
+      },
+      {
+        path: 'containers',
+        loadComponent: () =>
+          import('./pages/containers/container-list.component')
+            .then(m => m.ContainerListComponent)
+      },
+      {
+        path: 'containers/create',
+        loadComponent: () =>
+          import('./pages/containers/container-create.component')
+            .then(m => m.default)
+      },
+      {
+        path:'clients',
+        loadComponent: () =>
+          import('./pages/clients/client-list.component')
+            .then(m => m.ClientListComponent)
+      },
 
       {
         path: '',
