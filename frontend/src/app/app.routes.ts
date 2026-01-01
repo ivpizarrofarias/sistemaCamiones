@@ -6,12 +6,14 @@ const routes: Routes = [
     path: '',
     component: AdminLayoutComponent,
     children: [
+
       {
         path: 'dashboard',
         loadComponent: () =>
           import('./pages/dashboard/dashboard.component')
             .then(m => m.DashboardComponent)
       },
+
       {
         path: 'users',
         loadComponent: () =>
@@ -30,6 +32,7 @@ const routes: Routes = [
           import('./pages/users/user-update.component')
             .then(m => m.UserUpdateComponent)
       },
+
       {
         path: 'ships',
         loadComponent: () =>
@@ -48,6 +51,7 @@ const routes: Routes = [
           import('./pages/ships/ship-update.component')
             .then(m => m.default)
       },
+
       {
         path: 'trucks',
         loadComponent: () =>
@@ -60,22 +64,53 @@ const routes: Routes = [
           import('./pages/trucks/truck-create.component')
             .then(m => m.default)
       },
+
       {
-        path:'drivers',
+        path: 'drivers',
         loadComponent: () =>
           import('./pages/drivers/driver-list.component')
             .then(m => m.DriverListComponent)
       },
-      { path:'drivers/create',
+      {
+        path: 'drivers/create',
         loadComponent: () =>
           import('./pages/drivers/driver-create.component')
             .then(m => m.DriverCreateComponent)
       },
-      { path:'drivers/edit/:id',
-        loadComponent:()=>
+      {
+        path: 'drivers/edit/:id',
+        loadComponent: () =>
           import('./pages/drivers/driver-update.component')
-            .then(m=>m.DriverEditComponent)
+            .then(m => m.DriverEditComponent)
       },
+
+      {
+        path: 'trips',
+        loadComponent: () =>
+          import('./pages/trips/trip-list.component')
+            .then(m => m.TripListComponent)
+      },
+      {
+        path: 'trips/create',
+        loadComponent: () =>
+          import('./pages/trips/trip-create.component')
+            .then(m => m.TripCreateComponent)
+      },
+      {
+        path: 'trips/edit/:id',
+        loadComponent: () =>
+          import('./pages/trips/trip-update.component')
+            .then(m => m.TripUpdateComponent)
+      },
+
+      {
+        path: 'ports',
+        loadComponent: () =>
+          import('./pages/ports/port-list.component')
+            .then(m => m.PortListComponent)
+      },
+
+
       {
         path: '',
         redirectTo: 'dashboard',
@@ -84,4 +119,5 @@ const routes: Routes = [
     ]
   }
 ];
-export default routes
+
+export default routes;
