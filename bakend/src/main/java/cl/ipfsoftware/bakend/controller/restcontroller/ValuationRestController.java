@@ -15,11 +15,11 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/valuations")
-public class ValuationController {
+public class ValuationRestController {
 
     private final ValuationService valuationService;
 
-    public ValuationController(ValuationService valuationService) {
+    public ValuationRestController(ValuationService valuationService) {
         this.valuationService = valuationService;
     }
 
