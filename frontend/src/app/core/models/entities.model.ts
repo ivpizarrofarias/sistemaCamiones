@@ -51,6 +51,26 @@ export interface Movement {
   transportName?: string;
   containerCode?: string;
 }
+export interface Valuation {
+  valuationId?: number;
+  valuationDate: string;
+  value: string;
+  clientId: number;
+  shipId: number;
+  portId: number;
+  tripId: number;
+  containerId: number;
+  terrestrialTransportId: number;
+
+  // Campos para visualización (opcionales)
+  clientName?: string;
+  shipName?: string;
+  portName?: string;
+  tripCode?: string;
+  containerCode?: string;
+  transportName?: string;
+}
+
 
 export interface GroundTransport {
   transportId?: number;

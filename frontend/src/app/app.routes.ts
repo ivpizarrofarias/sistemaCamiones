@@ -152,6 +152,25 @@ const routes: Routes = [
             .then(m=>m.ClientUpdateComponent)
       },
       {
+        path:'ground-transports',
+        loadComponent:()=>
+          import('./pages/ground-transports/ground-transport-list.component')
+            .then(m=>m.GroundTransportListComponent)
+      },
+      {
+        path: 'ground-transports/create',
+        loadComponent: () =>
+          import('./pages/ground-transports/ground-transport-create.component')
+            .then(m => m.default)
+      },
+      {
+        path: 'ground-transports/edit/:id',
+        loadComponent: () =>
+          import('./pages/ground-transports/ground-transport-update.component')
+            .then(m => m.default)
+      },
+
+      {
         path: '',
         redirectTo: 'dashboard',
         pathMatch: 'full'
