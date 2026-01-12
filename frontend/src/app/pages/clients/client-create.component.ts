@@ -101,8 +101,8 @@ export default class ClientCreateComponent {
 
   form = this.fb.nonNullable.group({
     clientName: ['', Validators.required],
-    clientEmail: ['', [Validators.required, Validators.email]],
-    clientPhone: ['', Validators.required] // se mantiene tal cual
+    clientEmail: ['', [Validators.required, Validators.email]]
+
   });
 
   // Función para capitalizar la primera letra de cada palabra
