@@ -169,6 +169,12 @@ const routes: Routes = [
           import('./pages/ground-transports/ground-transport-update.component')
             .then(m => m.default)
       },
+      {
+        path:'movements',
+        loadComponent:() =>
+          import('./pages/movements/movement-list.component')
+        .then(m => m.MovementListComponent)
+      },
 
       {
         path: '',

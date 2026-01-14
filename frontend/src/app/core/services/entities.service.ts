@@ -126,8 +126,13 @@ export class PortService {
   providedIn: 'root'
 })
 export class MovementService {
+
   private http = inject(HttpClient);
   private apiUrl = `${environment.apiUrl}/movements`;
+
+  // ==========================
+  // MOVEMENTS
+  // ==========================
 
   getAllMovements(): Observable<Movement[]> {
     return this.http.get<Movement[]>(this.apiUrl);
@@ -151,6 +156,58 @@ export class MovementService {
 
   exportExcel(): void {
     window.open(`${this.apiUrl}/export/excel`, '_blank');
+  }
+
+  // ==========================
+  // DATOS PARA SELECTS
+  // ==========================
+
+  getClients(): Observable<ApiResponse<Client[]>> {
+    return this.http.get<ApiResponse<Client[]>>(
+      `${environment.apiUrl}/clientes`
+    );
+  }
+
+  getShips(): Observable<Ship[]> {
+    return this.http.get<Ship[]>(
+      `${environment.apiUrl}/ships`
+    );
+  }
+
+  getPorts(): Observable<Port[]> {
+    return this.http.get<Port[]>(
+      `${environment.apiUrl}/ports`
+    );
+  }
+
+  getGroundTransports(): Observable<GroundTransport[]> {
+    return this.http.get<GroundTransport[]>(
+      `${environment.apiUrl}/ground-transports`
+    );
+  }
+
+  getContainers(): Observable<ApiResponse<Container[]>> {
+    return this.http.get<ApiResponse<Container[]>>(
+      `${environment.apiUrl}/contenedores`
+    );
+  }
+
+  getTrips(): Observable<Trip[]> {
+    return this.http.get<Trip[]>(
+      `${environment.apiUrl}/trips`
+    );
+  }
+
+  getTrucks(): Observable<any[]> {
+    return this.http.get<any[]>(
+      `${environment.apiUrl}/trucks`
+    );
+  }
+
+  getDrivers(): Observable<any[]> {
+    return this.http.get<any[]>(
+      `${environment.apiUrl}/drivers`
+    );
   }
 }
 
@@ -236,4 +293,8 @@ export class ClientService {
   deleteClient(id: number): Observable<ApiResponse<void>> {
     return this.http.delete<ApiResponse<void>>(`${this.apiUrl}/eliminar/${id}`);
   }
+
+
 }
+
+
